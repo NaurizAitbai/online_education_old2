@@ -1,0 +1,5 @@
+.venv/
+.vscode/
+__pycache__/
+online_education/local_settings.py
+db.sqlite3
