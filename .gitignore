@@ -1,5 +1,6 @@
 .venv/
 .vscode/
 __pycache__/
+node_modules/
 online_education/local_settings.py
 db.sqlite3
