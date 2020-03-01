@@ -1,0 +1,36 @@
+{% extends 'base/index.html' %}
+
+{% load i18n %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mt-5">{% trans "Регистрация" %}</h1>
+
+    <form action="{% url 'register' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">{% trans 'Логин пользователя' %}</label>
+            <input type="text" name="username" id="username" class="form-control" placeholder="{% trans 'Введите ваш логин пользователя' %}">
+        </div>
+        <div class="form-group">
+            <label for="last_name">{% trans 'Фамилия' %}</label>
+            <input type="text" name="last_name" id="last_name" class="form-control" placeholder="{% trans 'Введите вашу фамилию' %}">
+        </div>
+        <div class="form-group">
+            <label for="first_name">{% trans 'Имя' %}</label>
+            <input type="text" name="first_name" id="first_name" class="form-control" placeholder="{% trans 'Введите ваш имя' %}">
+        </div>
+        <div class="form-group">
+            <label for="email">{% trans 'Электронная почта' %}</label>
+            <input type="email" name="email" id="email" class="form-control" placeholder="{% trans 'Введите вашу электронную почту' %}">
+        </div>
+        <div class="form-group">
+            <label for="password">{% trans 'Пароль' %}</label>
+            <input type="password" name="password" id="password" class="form-control" placeholder="{% trans 'Введите ваш пароль' %}">
+        </div>
+        <div class="text-right">
+            <button type="submit" class="btn btn-primary btn-sm">{% trans "Регистрация" %}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
