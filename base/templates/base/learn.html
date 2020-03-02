@@ -1,0 +1,10 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mt-5">{{ course.name }}</h1>
+    <div>
+        {% include 'widgets/lesson_view.html' %}
+    </div>
+</div>
+{% endblock %}

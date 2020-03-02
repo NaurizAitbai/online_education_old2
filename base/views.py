@@ -3,9 +3,17 @@ from django.contrib.auth import authenticate, login, logout as django_logout
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
+from base.models import Course, Lesson
+
 
 def index(request):
-    return render(request, 'base/index.html')
+    courses = Course.objects.all()
+
+    context = {
+        'courses': courses
+    }
+
+    return render(request, 'base/index.html', context=context)
 
 
 def auth(request):
@@ -62,3 +70,32 @@ def register(request):
 def logout(request):
     django_logout(request)
     return redirect('auth')
+
+
+def learn(request, course_id):
+    course = Course.objects.get(id=course_id)
+    lessons = Lesson.objects.filter(course=course)
+
+    lessons_dict = {}
+
+    for lesson in lessons:
+        if lesson.level not in lessons_dict:
+            lessons_dict[lesson.level] = []
+        lessons_dict[lesson.level].append(lesson)
+
+    context = {
+        'course': course,
+        'lessons_dict': lessons_dict,
+    }
+
+    return render(request, 'base/learn.html', context=context)
+
+
+def lesson(request, lesson_id):
+    lesson = Lesson.objects.get(id=lesson_id)
+
+    context = {
+        'lesson': lesson
+    }
+
+    return render(request, 'base/lesson.html', context=context)

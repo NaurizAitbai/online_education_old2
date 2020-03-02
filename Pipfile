@@ -9,3 +9,5 @@ autopep8 = "*"
 
 [packages]
 django = "*"
+channels = "*"
+docker = "*"
