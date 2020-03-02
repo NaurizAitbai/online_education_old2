@@ -28,10 +28,11 @@ class LessonConsumer(WebsocketConsumer):
 
             docker_host = settings.DOCKER_HOST
             docker_port = settings.DOCKER_PORT
+            terminal_url = settings.TERMINAL_URL
 
             client = docker.DockerClient(base_url='tcp://{}:{}'.format(docker_host, docker_port))
 
-            container = client.containers.run('python', command='/bin/bash -c "python3 main.py"', detach=True, stdin_open=True, tty=True, volumes={
+            container = client.containers.run('python', command='python -u main.py', detach=True, stdin_open=True, tty=True, volumes={
                 temp_file.name: {
                     'bind': '/main.py',
                     'mode': 'rw'
@@ -40,7 +41,6 @@ class LessonConsumer(WebsocketConsumer):
 
             self.send(text_data=json.dumps({
                 'type': 'RUN_CODE',
-                'docker_host': docker_host,
-                'docker_port': docker_port,
+                'terminal_url': terminal_url,
                 'container_id': container.id,
             }))
