@@ -31,7 +31,7 @@ class LessonConsumer(WebsocketConsumer):
 
             client = docker.DockerClient(base_url='tcp://{}:{}'.format(docker_host, docker_port))
 
-            container = client.containers.run('python', command='/bin/bash -c "python3 main.py"', detach=True, stdin_open=True, tty=True, volumes={
+            container = client.containers.run('python', command='python main.py', auto_remove=True, detach=True, stdin_open=True, tty=True, volumes={
                 temp_file.name: {
                     'bind': '/main.py',
                     'mode': 'rw'

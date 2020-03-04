@@ -32,7 +32,7 @@ $("#runCode").click(() => {
     }))
 });
 
-const terminal = new Terminal();
+let terminal = new Terminal();
 const fitAddon = new FitAddon.FitAddon();
 let attachAddon = null;
 
@@ -43,9 +43,11 @@ terminal.loadAddon(fitAddon);
 
 const terminalSocketOpen = e =>  {
     attachAddon = new AttachAddon.AttachAddon(terminalSocket);
+    terminal.dispose();
+    terminal = new Terminal();
+    terminal.open(document.getElementById("terminal"));
+    terminal.loadAddon(fitAddon);
     terminal.loadAddon(attachAddon);
-    //terminal.paste("\n");
-    console.log("TERMINAL COMPLETED");
 }
 
 window.onresize = event => {

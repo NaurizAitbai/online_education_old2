@@ -1,10 +1,10 @@
-{% for level, lessons in lessons_dict.items %}
+{% for lesson_block in lesson_blocks %}
 <div class="row">
-    {% for lesson in lessons %}
+    {% for lesson in lesson_block.lessons.all %}
     <div class="col">
         <div class="lesson card mx-auto">
             <a href="{% url 'lesson' lesson.id %}">
-                <img src="https://via.placeholder.com/150" class="card-img-top" alt="{{ lesson.name }}">
+                <img src="https://via.placeholder.com/150" alt="{{ lesson.name }}" class="card-img-top">
                 <div class="card-body">
                     <h5 class="card-title text-center">{{ lesson.name }}</h5>
                 </div>

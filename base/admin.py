@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from base.models import Course, Lesson, LessonProgress
+from base.models import Course, LessonBlock, Lesson, LessonProgress
 
 
 @admin.register(Course)
@@ -10,11 +10,18 @@ class CourseAdmin(admin.ModelAdmin):
     search_fields = ['id', 'name', 'description']
 
 
+@admin.register(LessonBlock)
+class LessonBlockAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'course', 'parent')
+    list_display_links = ('id', 'name')
+    search_fields = ['id', 'name', 'course__name', 'parent__name']
+
+
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'course', 'level')
+    list_display = ('id', 'name', 'block')
     list_display_links = ('id', 'name')
-    search_fields = ['id', 'name', 'level', 'course__name']
+    search_fields = ['id', 'name', 'block__name']
 
 
 @admin.register(LessonProgress)

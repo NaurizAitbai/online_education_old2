@@ -22,22 +22,36 @@ class Course(models.Model):
     
     def __str__(self):
         return self.name
+
+
+class LessonBlock(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lesson_blocks', verbose_name=_('Курс'))
+    parent = models.ForeignKey('LessonBlock', on_delete=models.CASCADE, null=True, blank=True, related_name='children', verbose_name=_('Родительский блок'))
+    name = models.CharField(max_length=255, verbose_name=_('Имя блока'))
+
+    class Meta:
+        db_table = 'lesson_blocks'
+        ordering = ['course', 'parent__id', 'name']
+        verbose_name = _('блок уроков')
+        verbose_name_plural = _('блоки уроков')
+
+    def __str__(self):
+        return "[{}] {}".format(self.course, self.name)
     
 
 class Lesson(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons', verbose_name=_('Курс'))
-    level = models.IntegerField(verbose_name=_('Уровень урока'))
+    block = models.ForeignKey(LessonBlock, on_delete=models.CASCADE, null=True, related_name='lessons', verbose_name=_('Блок уроков'))
     name = models.CharField(max_length=255, verbose_name=_('Имя урока'))
     lesson_text = models.TextField(null=True, blank=True, verbose_name=_('Текст урока'))
     
     class Meta:
         db_table = 'lessons'
-        ordering = ['course', 'level', 'name']
+        ordering = ['block', 'name']
         verbose_name = _('урок')
         verbose_name_plural = _('уроки')
     
     def __str__(self):
-        return "[{}] {}".format(self.course, self.name)
+        return "[{}] {}".format(self.block, self.name)
 
 
 class LessonProgress(models.Model):
