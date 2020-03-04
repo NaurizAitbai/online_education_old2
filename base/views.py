@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout as django_logout
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
-from base.models import Course, Lesson, LessonBlock
+from base.models import Course, Lesson, LessonBlock, LessonProgress
 
 
 def index(request):
@@ -87,8 +87,14 @@ def learn(request, course_id):
 def lesson(request, lesson_id):
     lesson = Lesson.objects.get(id=lesson_id)
 
+    try:
+        lesson_progress = LessonProgress.objects.get(lesson=lesson, user=request.user)
+    except LessonProgress.DoesNotExist:
+        lesson_progress = None
+
     context = {
-        'lesson': lesson
+        'lesson': lesson,
+        'lesson_progress': lesson_progress
     }
 
     return render(request, 'base/lesson.html', context=context)

@@ -13,6 +13,8 @@ lessonSocket.onmessage = e => {
     if (data_type === 'RUN_CODE') {
         terminalSocket = new WebSocket(`${json_data['terminal_url']}/containers/${json_data['container_id']}/attach/ws?logs=1&stream=1&stdin=1&stdout=1&stderr=1`);
         terminalSocket.onopen = terminalSocketOpen;
+    } else if (data_type === 'CHECK_CODE') {
+        console.log(json_data['result'])
     }
 }
 
@@ -28,6 +30,14 @@ $("#runCode").click(() => {
     const code = editor.getValue();
     lessonSocket.send(JSON.stringify({
         type: "RUN_CODE",
+        code: code
+    }))
+});
+
+$("#checkCode").click(() => {
+    const code = editor.getValue();
+    lessonSocket.send(JSON.stringify({
+        type: "CHECK_CODE",
         code: code
     }))
 });

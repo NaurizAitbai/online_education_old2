@@ -3,10 +3,17 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
 
-PROGRESS_STATUS = (
-    (0, _('Не начато')),
-    (1, _('Выполняется')),
-    (2, _('Завершено')),
+class PROGRESS_STATUS:
+    NOT_STARTED = 0
+    OPEN = 1
+    STARTED = 2
+    FINISHED = 3
+
+PROGRESS_CHOICES = (
+    (PROGRESS_STATUS.NOT_STARTED, _('Не начато')),
+    (PROGRESS_STATUS.OPEN, _('Открыто')),
+    (PROGRESS_STATUS.STARTED, _('Выполняется')),
+    (PROGRESS_STATUS.FINISHED, _('Завершено')),
 )
 
 
@@ -42,6 +49,7 @@ class LessonBlock(models.Model):
 class Lesson(models.Model):
     block = models.ForeignKey(LessonBlock, on_delete=models.CASCADE, null=True, related_name='lessons', verbose_name=_('Блок уроков'))
     name = models.CharField(max_length=255, verbose_name=_('Имя урока'))
+    original_code = models.TextField(null=True, blank=True, verbose_name=_('Код по-умолчанию'))
     lesson_text = models.TextField(null=True, blank=True, verbose_name=_('Текст урока'))
     
     class Meta:
@@ -54,10 +62,27 @@ class Lesson(models.Model):
         return "[{}] {}".format(self.block, self.name)
 
 
+class LessonTest(models.Model):
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='tests', verbose_name=_('Урок'))
+    name = models.CharField(max_length=255, verbose_name=_('Имя теста урока'))
+    input_data = models.TextField(null=True, blank=True, verbose_name=_('Входные данные'))
+    output_data = models.TextField(null=True, blank=True, verbose_name=_('Выходные данные'))
+
+    class Meta:
+        db_table = 'lesson_tests'
+        ordering = ['lesson', 'name']
+        verbose_name = _('тест урока')
+        verbose_name_plural = _('тесты урока')
+    
+    def __str__(self):
+        return "[{}] {}".format(self.lesson, self.name)
+
+
 class LessonProgress(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='related_users', verbose_name=_('Урок'))
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='related_lessons', verbose_name=_('Пользователь'))
-    status = models.IntegerField(choices=PROGRESS_STATUS, verbose_name=_('Статус выполнения'))
+    status = models.IntegerField(choices=PROGRESS_CHOICES, verbose_name=_('Статус выполнения'))
+    current_code = models.TextField(null=True, blank=True, verbose_name=_('Сохраненный код'))
 
     class Meta:
         db_table = 'lesson_progresses'
@@ -67,4 +92,4 @@ class LessonProgress(models.Model):
         verbose_name_plural = _('прогрессы уроков')
     
     def __str__(self):
-        return "{}:{} - {}".format(lesson, user, status)
+        return "{}:{} - {}".format(self.lesson, self.user, self.status)
