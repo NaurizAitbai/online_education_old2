@@ -11,7 +11,7 @@ lessonSocket.onmessage = e => {
     const data_type = json_data['type'];
 
     if (data_type === 'RUN_CODE') {
-        terminalSocket = new WebSocket(`ws://${json_data['docker_host']}:${json_data['docker_port']}/containers/${json_data['container_id']}/attach/ws?logs=1&stream=1&stdin=1&stdout=1&stderr=1`);
+        terminalSocket = new WebSocket(`${json_data['terminal_url']}/containers/${json_data['container_id']}/attach/ws?logs=1&stream=1&stdin=1&stdout=1&stderr=1`);
         terminalSocket.onopen = terminalSocketOpen;
     }
 }
