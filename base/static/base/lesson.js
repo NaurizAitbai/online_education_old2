@@ -15,6 +15,11 @@ lessonSocket.onmessage = e => {
         terminalSocket.onopen = terminalSocketOpen;
     } else if (data_type === 'CHECK_CODE') {
         console.log(json_data['result'])
+        if(json_data['result'] === true) {
+            alert("Проверка успешно");
+        } else {
+            alert("Проверка не успешно");
+        }
     }
 }
 

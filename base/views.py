@@ -73,6 +73,9 @@ def logout(request):
 
 
 def learn(request, course_id):
+    if not request.user.is_authenticated:
+        return redirect('auth')
+
     course = Course.objects.get(id=course_id)
     lesson_blocks = LessonBlock.objects.filter(course=course)
 
@@ -85,6 +88,9 @@ def learn(request, course_id):
 
 
 def lesson(request, lesson_id):
+    if not request.user.is_authenticated:
+        return redirect('auth')
+
     lesson = Lesson.objects.get(id=lesson_id)
 
     try:
