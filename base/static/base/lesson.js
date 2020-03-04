@@ -48,6 +48,7 @@ const terminalSocketOpen = e =>  {
     terminal.open(document.getElementById("terminal"));
     terminal.loadAddon(fitAddon);
     terminal.loadAddon(attachAddon);
+    terminal.paste('\n');
 }
 
 window.onresize = event => {

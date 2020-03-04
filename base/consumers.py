@@ -8,12 +8,15 @@ from django.conf import settings
 
 class LessonConsumer(WebsocketConsumer):
     def connect(self):
-        self.docker = None
+        self.container = None
         self.accept()
     
     def disconnect(self, close_node):
-        if self.docker:
-            self.docker.stop()
+        if self.container:
+            try:
+                self.container.stop()
+            except:
+                pass
 
     def receive(self, text_data):
         data = json.loads(text_data)
@@ -23,6 +26,7 @@ class LessonConsumer(WebsocketConsumer):
 
             print(data)
 
+            temp_file.write("input('')\n")
             temp_file.write(data['code'])
             temp_file.flush()
 
@@ -32,12 +36,20 @@ class LessonConsumer(WebsocketConsumer):
 
             client = docker.DockerClient(base_url='tcp://{}:{}'.format(docker_host, docker_port))
 
+            if self.container:
+                try:
+                    self.container.stop()
+                except:
+                    pass
+                self.container = None
+
             container = client.containers.run('python', command='python main.py', auto_remove=True, detach=True, stdin_open=True, tty=True, volumes={
                 temp_file.name: {
                     'bind': '/main.py',
                     'mode': 'rw'
                 }
             })
+            self.container = container
 
             self.send(text_data=json.dumps({
                 'type': 'RUN_CODE',

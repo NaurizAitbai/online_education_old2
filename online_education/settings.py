@@ -125,7 +125,7 @@ STATICFILES_DIRS = [
 # Подключение к Docker Daemon
 DOCKER_HOST = '127.0.0.1'
 DOCKER_PORT = '2376'
-TERMINAL_URL = 'ws://127.0.0.1'
+TERMINAL_URL = 'ws://127.0.0.1:2376'
 
 try:
     from .local_settings import *
