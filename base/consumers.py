@@ -12,6 +12,7 @@ from base.models import Lesson, LessonTest, LessonProgress, PROGRESS_STATUS
 class LessonConsumer(WebsocketConsumer):
     def connect(self):
         self.container = None
+        self.events = None
         self.accept()
     
     def disconnect(self, close_node):
@@ -75,6 +76,27 @@ class LessonConsumer(WebsocketConsumer):
                 'terminal_url': terminal_url,
                 'container_id': container.id,
             }))
+
+            events = client.events(decode=True)
+            for event in events:
+                if 'id' in event and event['id'] == container.id and 'status' in event and event['status'] == 'die':
+                    self.send(text_data=json.dumps({
+                        'type': 'FINISH_CODE'
+                    }))
+                    events.close()
+
+        elif data['type'] == 'STOP_CODE':
+            if self.container:
+                try:
+                    self.container.stop()
+                    self.container.remove()
+                except:
+                    pass
+                self.container = None
+            
+            self.send(text_data=json.dumps({
+                'type': 'STOP_CODE',
+            }))
         elif data['type'] == 'CHECK_CODE':
             try:
                 lesson_progress = LessonProgress.objects.get(lesson=lesson, user=user)
@@ -128,9 +150,6 @@ class LessonConsumer(WebsocketConsumer):
 
                 output_data = lesson_test.output_data.split()
                 result = stdout.split()
-
-                print(output_data)
-                print(result)
 
                 if not output_data == result:
                     test_result = False

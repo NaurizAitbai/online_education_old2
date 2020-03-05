@@ -6,3 +6,50 @@
 .lesson img {
     width: 100%;
 }
+
+.terminal-block {
+    position: relative;
+}
+
+.terminal-overlay {
+    position: absolute;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.5);
+    width: 100%;
+    height: 100%;
+}
+
+.terminal-text {
+    position: absolute;
+    width: 100%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.spinner-large {
+    width: 3rem;
+    height: 3rem;
+}
+
+.terminal-loading {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -1.5rem;
+    margin-top: -1.5rem;
+}
+
+.result-center {
+    width: 100%;
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.result-loading .spinner-grow {
+    margin-right: 5px;
+}

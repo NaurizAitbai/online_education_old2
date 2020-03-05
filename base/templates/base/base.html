@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static '@fortawesome/fontawesome-free/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'base/base.css' %}">
     {% block css %}{% endblock %}
 </head>
@@ -29,9 +30,9 @@
             </ul>
             {% if request.user.is_authenticated %}
             <span class="mr-2">{{ request.user.username }}</span>
-            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">{% trans "Выйти" %}</a>
+            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm"><i class="fa fa-sign-out-alt"></i> {% trans "Выйти" %}</a>
             {% else %}
-            <a href="{% url 'auth' %}" class="btn btn-success btn-sm">{% trans "Вход" %}</a>
+            <a href="{% url 'auth' %}" class="btn btn-success btn-sm"><i class="fa fa-sign-in-alt"></i> {% trans "Вход" %}</a>
             {% endif %}
         </div>
     </nav>

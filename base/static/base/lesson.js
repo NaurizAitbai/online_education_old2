@@ -13,12 +13,30 @@ lessonSocket.onmessage = e => {
     if (data_type === 'RUN_CODE') {
         terminalSocket = new WebSocket(`${json_data['terminal_url']}/containers/${json_data['container_id']}/attach/ws?logs=1&stream=1&stdin=1&stdout=1&stderr=1`);
         terminalSocket.onopen = terminalSocketOpen;
+        $("#terminalMessageBlock").addClass("d-none");
+        $("#runCode").removeClass('disabled');
+        $("#runCode").addClass('d-none');
+        $("#stopCode").removeClass('d-none');
+    } else if(data_type === 'STOP_CODE') {
+        $("#terminalLoading").addClass('d-none');
+        $("#terminalMessage").removeClass('d-none');
+        $("#terminalMessageBlock").removeClass('d-none');
+        $("#stopCode").removeClass("disabled");
+        $("#runCode").removeClass('d-none');
+        $("#stopCode").addClass('d-none');
+    } else if(data_type === 'FINISH_CODE') {
+        $("#stopCode").removeClass("disabled");
+        $("#runCode").removeClass('d-none');
+        $("#stopCode").addClass('d-none');
     } else if (data_type === 'CHECK_CODE') {
-        console.log(json_data['result'])
+        $("#resultLoading").addClass('d-none');
         if(json_data['result'] === true) {
-            alert("Проверка успешно");
+            $("#resultSuccess").removeClass('d-none');
+            $("#resultCloseButton").removeClass('d-none');
+            $("#resultNextButton").removeClass('d-none');
         } else {
-            alert("Проверка не успешно");
+            $("#resultFail").removeClass("d-none");
+            $("#resultCloseButton").removeClass('d-none');
         }
     }
 }
@@ -33,19 +51,37 @@ const editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
 
 $("#runCode").click(() => {
     const code = editor.getValue();
+
+    $("#terminalMessage").addClass("d-none");
+    $("#terminalLoading").removeClass("d-none");
+    $("#runCode").addClass('disabled');
+
     lessonSocket.send(JSON.stringify({
         type: "RUN_CODE",
         code: code
     }))
 });
 
+$("#stopCode").click(() => {
+    $("#stopCode").addClass('disabled');
+
+    lessonSocket.send(JSON.stringify({
+        type: "STOP_CODE",
+    }))
+})
+
 $("#checkCode").click(() => {
     const code = editor.getValue();
+    $("#codeResultWindow").modal();
     lessonSocket.send(JSON.stringify({
         type: "CHECK_CODE",
         code: code
     }))
 });
+
+$("#helpCollapseButton").click(() => {
+    $("#helpCollapse").collapse('toggle');
+})
 
 let terminal = new Terminal();
 const fitAddon = new FitAddon.FitAddon();
@@ -69,3 +105,11 @@ const terminalSocketOpen = e =>  {
 window.onresize = event => {
     fitAddon.fit();
 }
+
+$("#codeResultWindow").on('show.bs.modal', function (e) {
+    $("#resultLoading").removeClass('d-none');
+    $("#resultSuccess").addClass('d-none');
+    $("#resultFail").addClass('d-none');
+    $("#resultCloseButton").addClass('d-none');
+    $("#resultNextButton").addClass('d-none');
+})

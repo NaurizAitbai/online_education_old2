@@ -1,6 +1,6 @@
 from django import template
 
-from base.models import LessonProgress, PROGRESS_STATUS
+from base.models import LessonBlock, Lesson, LessonProgress, PROGRESS_STATUS
 
 register = template.Library()
 
