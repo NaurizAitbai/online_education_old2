@@ -129,6 +129,7 @@ class LessonConsumer(WebsocketConsumer):
             lesson_tests = LessonTest.objects.filter(lesson=lesson)
 
             test_result = True
+            test_helper = ''
 
             for lesson_test in lesson_tests:
                 container = client.containers.create('python', command='python main.py', stdin_open=True, volumes={
@@ -153,6 +154,7 @@ class LessonConsumer(WebsocketConsumer):
 
                 if not output_data == result:
                     test_result = False
+                    test_helper = lesson_test.help_text
                     break
             
             if test_result:
@@ -161,5 +163,6 @@ class LessonConsumer(WebsocketConsumer):
             
             self.send(text_data=json.dumps({
                 'type': 'CHECK_CODE',
-                'result': test_result
+                'result': test_result,
+                'help_text': test_helper
             }))

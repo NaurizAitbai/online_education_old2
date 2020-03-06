@@ -51,6 +51,7 @@ class Lesson(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('Имя урока'))
     original_code = models.TextField(null=True, blank=True, verbose_name=_('Код по-умолчанию'))
     lesson_text = models.TextField(null=True, blank=True, verbose_name=_('Текст урока'))
+    task_text = models.TextField(null=True, blank=True, verbose_name=_('Текст задания урока'))
     
     class Meta:
         db_table = 'lessons'
@@ -65,6 +66,7 @@ class Lesson(models.Model):
 class LessonTest(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='tests', verbose_name=_('Урок'))
     name = models.CharField(max_length=255, verbose_name=_('Имя теста урока'))
+    help_text = models.TextField(null=True, blank=True, verbose_name=_('Подсказка'))
     input_data = models.TextField(null=True, blank=True, verbose_name=_('Входные данные'))
     output_data = models.TextField(null=True, blank=True, verbose_name=_('Выходные данные'))
 

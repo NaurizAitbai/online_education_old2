@@ -37,6 +37,7 @@ lessonSocket.onmessage = e => {
         } else {
             $("#resultFail").removeClass("d-none");
             $("#resultCloseButton").removeClass('d-none');
+            $("#failHelpText").html(json_data['help_text']);
         }
     }
 }
