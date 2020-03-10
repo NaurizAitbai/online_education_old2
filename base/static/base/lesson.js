@@ -46,6 +46,12 @@ lessonSocket.onclose = e => {
     console.error("lessonSocket closed unexpectedly");
 }
 
+$(".code-editor").each((index, element) => {
+    CodeMirror.fromTextArea(element, {
+        lineNumbers: true
+    })
+});
+
 const editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
     lineNumbers: true
 });

@@ -49,8 +49,8 @@ class LessonBlock(models.Model):
 class Lesson(models.Model):
     block = models.ForeignKey(LessonBlock, on_delete=models.CASCADE, null=True, related_name='lessons', verbose_name=_('Блок уроков'))
     name = models.CharField(max_length=255, verbose_name=_('Имя урока'))
-    original_code = models.TextField(null=True, blank=True, verbose_name=_('Код по-умолчанию'))
     lesson_text = models.TextField(null=True, blank=True, verbose_name=_('Текст урока'))
+    original_code = models.TextField(null=True, blank=True, verbose_name=_('Код по-умолчанию'))
     task_text = models.TextField(null=True, blank=True, verbose_name=_('Текст задания урока'))
     
     class Meta:
@@ -61,6 +61,20 @@ class Lesson(models.Model):
     
     def __str__(self):
         return "[{}] {}".format(self.block, self.name)
+
+
+class Code(models.Model):
+    name = models.CharField(max_length=255, unique=True, verbose_name=_('Название кода (Уникальный)'))
+    code = models.TextField(null=True, blank=True, verbose_name=_('Текст кода'))
+
+    class Meta:
+        db_table = 'codes'
+        ordering = ['name']
+        verbose_name = _('код')
+        verbose_name_plural = _('коды')
+    
+    def __str__(self):
+        return self.name
 
 
 class LessonTest(models.Model):
