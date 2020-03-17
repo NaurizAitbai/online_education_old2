@@ -46,12 +46,7 @@ lessonSocket.onclose = e => {
     console.error("lessonSocket closed unexpectedly");
 }
 
-$(".code-editor").each((index, element) => {
-    CodeMirror.fromTextArea(element, {
-        lineNumbers: true
-    })
-});
-
+// TODO: Рефакторинг
 const editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
     lineNumbers: true
 });
@@ -119,4 +114,52 @@ $("#codeResultWindow").on('show.bs.modal', function (e) {
     $("#resultFail").addClass('d-none');
     $("#resultCloseButton").addClass('d-none');
     $("#resultNextButton").addClass('d-none');
+})
+
+/*
+    NEW CODE
+*/
+
+// Создание интерактивных редакторов кода CodeMirror
+$(".code-editor").each((index, element) => {
+    CodeMirror.fromTextArea(element, {
+        lineNumbers: true
+    })
+});
+
+// Список всех интерактивных консолей
+const terminals = {};
+
+// TODO: Продолжение
+$(".terminal_app").each((index, element) => {
+    const terminal_id = element.id.replace('terminal_', '');
+    const terminal = new Terminal();
+    const fitAddon = new FitAddon.FitAddon();
+
+    terminal.open(document.getElementById(`terminal_${terminal_id}`));
+    terminal.loadAddon(fitAddon);
+
+    terminals[terminal_id] = {
+        app: terminal,
+        socket: null
+    }
+})
+
+// Показать/скрыть интерактивный консоль
+$(".toggle-terminal").click(event => {
+    event.preventDefault();
+    const element = event.target;
+    const code_name = element.dataset.code;
+
+    const terminalBlock = $(`#terminalBlock_${code_name}`);
+
+    if(terminalBlock[0].dataset.hidden === "true") {
+        terminalBlock[0].dataset.hidden = false;
+        terminalBlock.removeClass("d-none");
+        element.innerHTML = "Скрыть терминал";
+    } else {
+        terminalBlock[0].dataset.hidden = true;
+        terminalBlock.addClass('d-none');
+        element.innerHTML = "Показать терминал";
+    }
 })
