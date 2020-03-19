@@ -1,23 +1,15 @@
-<div class="mt-3">
-    <div class="border">
-        <textarea id="editor_{{ code.name }}"
-            class="code-editor">{% if code.code %}{{ code.code }}{% endif %}</textarea>
-    </div>
+<div class="code-runner mt-3" data-code="{{ code.name }}">
+    <textarea class="code-editor">{% if code.code %}{{ code.code }}{% endif %}</textarea>
     <div class="mt-1 d-flex">
-        <a href="#" class="mr-auto toggle-terminal" data-code="{{ code.name }}">Показать терминал</a>
-        <button id="runCode_{{ code.name }}" class="btn btn-primary btn-sm"><i class="fas fa-play"></i> Выполнить
-            код</button>
-        <button id="stopCode_{{ code.name }}" class="btn btn-danger btn-sm d-none"><i class="fas fa-stop"></i>
-            Остановить выполнение кода</button>
+        <a href="#" class="mr-auto toggle-terminal">Показать терминал</a>
+        <button class="run-code btn btn-primary btn-sm"><i class="fas fa-play"></i> Выполнить код</button>
+        <div class="stop-code btn btn-danger btn-sm d-none"><i class="fas fa-stop"></i> Остановить код</div>
     </div>
-</div>
-<div id="terminalBlock_{{ code.name }}" class="terminal-block mt-3 d-none" data-hidden="true">
-    <div class="terminal-overlay">
-        <h4 id="terminalMessage_{{ code.name }}" class="text-center text-white terminal-text">
-            Запустите результаты в терминале
-        </h4>
-        <div id="terminalLoading_{{ code.name }}" role="status"
-            class="spinner-large terminal-loading spinner-border text-white d-none"></div>
+    <div class="terminal-block mt-3 d-none" data-hidden="true">
+        <div class="terminal-overlay">
+            <h4 class="terminal-text text-center text-white">Запустите код чтобы посмотреть результаты</h4>
+            <div class="terminal-loading spinner-large spinner-border text-white d-none"></div>
+        </div>
+        <div class="terminal-app"></div>
     </div>
-    <div id="terminal_{{ code.name }}" class="terminal_app"></div>
 </div>

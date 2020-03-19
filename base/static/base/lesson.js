@@ -120,46 +120,53 @@ $("#codeResultWindow").on('show.bs.modal', function (e) {
     NEW CODE
 */
 
-// Создание интерактивных редакторов кода CodeMirror
-$(".code-editor").each((index, element) => {
-    CodeMirror.fromTextArea(element, {
-        lineNumbers: true
-    })
-});
+// Список интерактивных редакторов
+const code_runners = {};
 
-// Список всех интерактивных консолей
-const terminals = {};
-
-// TODO: Продолжение
-$(".terminal_app").each((index, element) => {
-    const terminal_id = element.id.replace('terminal_', '');
-    const terminal = new Terminal();
-    const fitAddon = new FitAddon.FitAddon();
-
-    terminal.open(document.getElementById(`terminal_${terminal_id}`));
-    terminal.loadAddon(fitAddon);
-
-    terminals[terminal_id] = {
-        app: terminal,
-        socket: null
-    }
-})
-
-// Показать/скрыть интерактивный консоль
-$(".toggle-terminal").click(event => {
-    event.preventDefault();
-    const element = event.target;
+$(".code-runner").each((index, element) => {
     const code_name = element.dataset.code;
 
-    const terminalBlock = $(`#terminalBlock_${code_name}`);
+    const editor_element = $(element).children(".code-editor")[0];
 
-    if(terminalBlock[0].dataset.hidden === "true") {
-        terminalBlock[0].dataset.hidden = false;
-        terminalBlock.removeClass("d-none");
-        element.innerHTML = "Скрыть терминал";
-    } else {
-        terminalBlock[0].dataset.hidden = true;
-        terminalBlock.addClass('d-none');
-        element.innerHTML = "Показать терминал";
+    const editor = CodeMirror.fromTextArea(editor_element, {
+        lineNumbers: true
+    })
+
+    code_runners[code_name] = {
+        editor: editor,
+        terminal: null
     }
-})
+});
+
+// Показать/Скрыть интерактивную консоль
+$(".toggle-terminal").click(event => {
+    event.preventDefault();
+    const toggle_element = event.target;
+    const code_runner = $(toggle_element).parents('.code-runner')[0];
+    const code_name = code_runner.dataset.code;
+
+    const terminal_block = $(code_runner).children('.terminal-block')[0];
+
+    if(terminal_block.dataset.hidden === "true") {
+        terminal_block.dataset.hidden = false;
+        $(terminal_block).removeClass("d-none");
+        toggle_element.innerHTML = "Скрыть терминал";
+    } else {
+        terminal_block.dataset.hidden = true;
+        $(terminal_block).addClass("d-none");
+        toggle_element.innerHTML = "Показать терминал";
+    }
+
+    if (code_runners[code_name].terminal === null) {
+        const terminal_element = $(terminal_block).children(".terminal-app")[0];
+        const terminal = new Terminal();
+
+        terminal.open(terminal_element);
+        terminal.loadAddon(fitAddon);
+
+        code_runners[code_name].terminal = {
+            app: terminal,
+            socket: null
+        };
+    }
+});
